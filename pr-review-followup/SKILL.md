@@ -1,6 +1,6 @@
 ---
 name: pr-review-followup
-description: Lists the user's open GitHub pull requests in dialpad/firespotter that still have unresolved review threads, unanswered reviewer comments, or open CHANGES_REQUESTED reviews, then drafts a proposed solution summary for each item. Use when the user wants to triage PR review feedback, see what needs a reply, or get suggestions for addressing reviewer comments. Defaults to repo dialpad/firespotter and author uditgulati-dp; both can be overridden.
+description: Lists the user's open GitHub pull requests in dialpad/firespotter that still have unresolved review threads, unanswered reviewer comments, or open CHANGES_REQUESTED reviews, then drafts a proposed solution summary for each item. Use when the user wants to triage PR review feedback, see what needs a reply, or get suggestions for addressing reviewer comments. Defaults to repo dialpad/firespotter and the currently authenticated `gh` user as author; both can be overridden.
 ---
 
 # PR Review Follow-up
@@ -10,7 +10,7 @@ Helps the user triage review feedback on their open pull requests. For each PR t
 ## Defaults
 
 - Repo: `dialpad/firespotter`
-- Author: `uditgulati-dp`
+- Author: the login of the currently authenticated `gh` user (`gh api user --jq .login`)
 
 If the user passes arguments, override accordingly. Recognized forms:
 - `--repo owner/name`

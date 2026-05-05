@@ -6,7 +6,7 @@
 #   ./fetch-unresolved.sh [--repo owner/name] [--author login] [--pr <number>]
 #                         [--reviewer login[,login...]] [--no-bots]
 #
-# Defaults: repo=dialpad/firespotter author=uditgulati-dp reviewer=<all>
+# Defaults: repo=dialpad/firespotter author=<authenticated gh user> reviewer=<all>
 #
 # --reviewer  Comma-separated list (or repeatable flag) of reviewer logins to
 #             keep. Matches the comment/review author. Substring/glob is NOT
@@ -55,7 +55,7 @@
 set -euo pipefail
 
 REPO="dialpad/firespotter"
-AUTHOR="uditgulati-dp"
+AUTHOR=""
 SINGLE_PR=""
 REVIEWERS=""     # empty = all
 NO_BOTS=0
@@ -79,6 +79,15 @@ if [[ -n "$REVIEWERS" ]]; then
   REVIEWERS_JSON=$(printf '%s' "$REVIEWERS" | tr ',' '\n' | jq -R . | jq -s 'map(select(length>0))')
 else
   REVIEWERS_JSON='[]'
+fi
+
+# Default author: the user currently authenticated with `gh`.
+if [[ -z "$AUTHOR" ]]; then
+  AUTHOR=$(gh api user --jq .login 2>/dev/null || true)
+  if [[ -z "$AUTHOR" ]]; then
+    echo "Could not determine default author from 'gh api user'. Pass --author <login> or run 'gh auth login'." >&2
+    exit 2
+  fi
 fi
 
 OWNER="${REPO%%/*}"
